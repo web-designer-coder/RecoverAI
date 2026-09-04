@@ -1,0 +1,24 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# Environment — never commit real configuration or secrets
+.env
+.env.local
+.env.*.local
+
+# Testing / tooling caches
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+htmlcov/
+.coverage
+
+# Logs — never commit
+server.log
+
+# Alembic
+migrations/versions/__pycache__/
