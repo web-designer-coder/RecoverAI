@@ -242,41 +242,15 @@ AI_RECOVERY_RATE = 68.5
 
 def _canonical_action(token: str) -> RecommendedAction:
     return RecommendedAction("CUSTOMER_NOTIFICATION" if token == "NOTIFY" else token)
-
-
-def seed_database(
-    session: Session,
-    merchant_name: str = MERCHANT_NAME,
-    email: str = MERCHANT_EMAIL,
-    password: str = DEMO_PASSWORD,
-) -> Merchant:
-    """Populate an EMPTY database with the demo environment.
-
-    Idempotent: if a merchant with ``email`` already exists, its
-    ``password_hash`` is back-filled when NULL (migrates legacy seed data)
-    and the existing merchant is returned without creating duplicates.
-    """
-    existing = session.scalars(
-        select(Merchant).where(Merchant.email == email)
+def seed_merchants_data(session: Session, merchant: Merchant) -> None:
+    """Seed demo dataset belonging ONLY to `merchant`. Idempotent by merchant scope."""
+    existing_payments = session.scalars(
+        select(Payment).where(Payment.merchant_id == merchant.id)
     ).first()
-    if existing is not None:
-        # Migrate legacy seed merchants that were created without a password.
-        if existing.password_hash is None:
-            existing.password_hash = hash_password(password)
-        return existing
+    if existing_payments is not None:
+        return
 
-    merchant = Merchant(
-        name=merchant_name,
-        email=email,
-        password_hash=hash_password(password),
-    )
-    session.add(merchant)
-    session.flush()
-
-    # policies ---------------------------------------------------------------
     session.add(MerchantPolicy(merchant_id=merchant.id, **SEED_POLICIES))
-
-    # payments (+failures, decisions, actions) ---------------------------------
     customers: dict[str, Customer] = {}
     payments_by_external: dict[str, Payment] = {}
 
@@ -350,7 +324,6 @@ def seed_database(
 
     session.flush()
 
-    # audit trail --------------------------------------------------------------
     for e in SEED_AUDIT:
         payment = payments_by_external[e["pid"]]
         session.add(AuditEvent(
@@ -364,7 +337,6 @@ def seed_database(
             meta=e["meta"],
             created_at=_hours_ago(-e["h"]),
         ))
-    # One PAYMENT_FAILED record per seeded payment keeps the log complete.
     existing_failed = {e["pid"] for e in SEED_AUDIT if e["etype"] == "PAYMENT_FAILED"}
     for s in SEED_PAYMENTS:
         if s["pid"] in existing_failed:
@@ -381,10 +353,8 @@ def seed_database(
             created_at=_hours_ago(-s["failed_h"]),
         ))
 
-    # simulations ----------------------------------------------------------------
     for sim in SEED_SIMULATIONS:
         failed = round(sim["transactions"] * sim["failure_rate"])
-        revenue_at_risk = failed * sim["average_amount"]
         avg_recovered_value = sim["average_amount"] * 0.98
         static_count = round(failed * STATIC_RECOVERY_RATE / 100)
         ai_count = round(failed * AI_RECOVERY_RATE / 100)
@@ -400,9 +370,40 @@ def seed_database(
             ai_recovered_revenue=_dec(round(ai_count * avg_recovered_value, 2)),
             incremental_revenue=_dec(round((ai_count - static_count) * avg_recovered_value, 2)),
         ))
-
     session.flush()
+
+
+def seed_database(
+    session: Session,
+    merchant_name: str = MERCHANT_NAME,
+    email: str = MERCHANT_EMAIL,
+    password: str = DEMO_PASSWORD,
+) -> Merchant:
+    """Populate an EMPTY database with the demo environment.
+
+    Idempotent: if a merchant with ``email`` already exists, its
+    ``password_hash`` is back-filled when NULL (migrates legacy seed data)
+    and the existing merchant is returned without creating duplicates.
+    """
+    existing = session.scalars(
+        select(Merchant).where(Merchant.email == email)
+    ).first()
+    if existing is not None:
+        # Migrate legacy seed merchants that were created without a password.
+        if existing.password_hash is None:
+            existing.password_hash = hash_password(password)
+        return existing
+
+    merchant = Merchant(
+        name=merchant_name,
+        email=email,
+        password_hash=hash_password(password),
+    )
+    session.add(merchant)
+    session.flush()
+    seed_merchants_data(session, merchant)
     return merchant
+
 
 
 def clear_demo_data(session: Session) -> int:
@@ -471,3 +472,5 @@ def main(reset: bool = False) -> int:
 
 if __name__ == "__main__":
     sys.exit(main(reset="--reset" in sys.argv))
+
+

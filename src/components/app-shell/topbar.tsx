@@ -212,7 +212,7 @@ function ProfileMenu() {
         aria-expanded={open}
         className="flex items-center gap-2 rounded-lg px-2.5 py-2 transition-colors duration-150 hover:bg-surface-high focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2 focus-visible:ring-offset-background"
       >
-        <span className="grid h-6 w-6 shrink-0 place-items-center rounded-full bg-surface text-[0.625rem] font-bold text-background">
+        <span className="grid h-6 w-6 shrink-0 place-items-center rounded-full bg-[#eaeef5] text-[#0c0e14] text-[0.625rem] font-bold shadow-[0_0_0_1px_rgba(255,255,255,0.08)]">
           {initial}
         </span>
         <ChevronDown
@@ -224,7 +224,7 @@ function ProfileMenu() {
         />
       </button>
       {open && (
-        <div className="absolute right-0 top-full z-[60] mt-2 w-64 animate-in fade-in slide-in-from-top-2 duration-200 ease-out overflow-visible rounded-xl bg-surface border border-border shadow-[0_16px_40px_-20px_rgb(18_20_22/0.6)] pointer-events-auto">
+        <div className="absolute right-0 top-full z-[60] mt-2 w-64 animate-in fade-in slide-in-from-top-2 duration-200 ease-out rounded-xl bg-surface border border-border shadow-[0_16px_40px_-20px_rgb(18_20_22/0.6)]">
           <div className="border-b border-border px-4 py-3">
             <p className="truncate text-sm font-medium text-foreground">{session?.businessName ?? "Merchant"}</p>
             <p className="num truncate text-xs text-muted-foreground">{session?.email ?? "—"}</p>
@@ -243,7 +243,7 @@ function ProfileMenu() {
               onClick={() => {
                 close();
                 signOut();
-                navigate({ to: "/" });
+                navigate({ to: "/login" });
               }}
               className="flex w-full items-center gap-2 rounded-lg px-2.5 py-2 text-left text-sm text-error transition-all duration-150 hover:bg-surface-high hover:pl-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-error focus-visible:ring-inset"
             >

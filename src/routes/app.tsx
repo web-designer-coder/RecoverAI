@@ -488,14 +488,14 @@ function ProfileMenu() {
   }, [open]);
 
   return (
-    <div ref={containerRef} className="relative isolate">
+    <div ref={containerRef} className="relative">
       <button
         onClick={() => setOpen((v) => !v)}
         aria-label="Account menu"
         aria-expanded={open}
         className="flex items-center gap-2 rounded-full px-2.5 py-1.5 transition-colors duration-150 hover:bg-white/[0.06] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2 focus-visible:ring-offset-[#0d1018]"
       >
-        <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-surface text-[0.625rem] font-bold text-background">
+        <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-[#eaeef5] text-[#0c0e14] text-[0.625rem] font-bold shadow-[0_0_0_1px_rgba(255,255,255,0.08)]">
           {initial}
         </span>
         <svg
@@ -514,7 +514,7 @@ function ProfileMenu() {
       </button>
 
       {open && (
-        <div className="absolute right-0 top-full z-[60] mt-2 w-64 overflow-visible rounded-2xl border border-[rgb(255_255_255/0.08)] bg-[#12151c] shadow-[0_24px_64px_-24px_rgb(0_0_0/0.8)] pointer-events-auto">
+        <div className="absolute right-0 top-full z-[60] mt-2 w-64 rounded-2xl border border-[rgb(255_255_255/0.08)] bg-[#12151c] shadow-[0_24px_64px_-24px_rgb(0_0_0/0.8)]">
           <div className="border-b border-[rgb(255_255_255/0.06)] px-4 py-3">
             <p className="truncate text-sm font-medium text-[#eaedf3]">
               {session?.businessName ?? "Merchant"}
@@ -672,7 +672,7 @@ function AppLayout() {
         {/* Floating app surface */}
         <div className="app-surface mx-auto w-full max-w-[1728px] overflow-hidden">
           {/* ---------- Integrated top nav ---------- */}
-          <header className="flex items-center gap-3 px-4 py-3 sm:px-5 lg:px-6 lg:gap-4 liquid-glass">
+          <header className="relative z-20 flex items-center gap-3 px-4 py-3 sm:px-5 lg:px-6 lg:gap-4 liquid-glass overflow-visible">
             {/* Mobile: hamburger + logo */}
             <button
               onClick={() => setMobileNavOpen(true)}

@@ -94,9 +94,28 @@
     "eslint-plugin-react-refresh": "^0.4.20",
     "globals": "^15.15.0",
     "nitro": "3.0.260603-beta",
+    "playwright": "^1.62.1",
     "prettier": "^3.7.3",
     "typescript": "^5.8.3",
     "typescript-eslint": "^8.56.1",
     "vite": "8.1.5"
-  }
+  },
+  "version": "1.0.0",
+  "description": "AI-powered payment revenue recovery platform that helps merchants recover failed payments through deterministic intelligence, merchant-defined policies, and Razorpay Test Mode integration.",
+  "main": "eslint.config.js",
+  "directories": {
+    "doc": "docs",
+    "test": "tests"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/web-designer-coder/RecoverAI.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/web-designer-coder/RecoverAI/issues"
+  },
+  "homepage": "https://github.com/web-designer-coder/RecoverAI#readme"
 }

@@ -13,6 +13,7 @@ from app.repositories import MerchantRepository
 from app.services.providers.razorpay_client import RazorpayClient, RazorpayNotConfigured
 from app.utils.encryption import DecryptionError, decrypt_value, encrypt_value
 from app.config import get_settings
+from app.seed import seed_merchants_data
 
 
 class MerchantService:
@@ -39,6 +40,14 @@ class MerchantService:
         )
         self._session.add(merchant)
         self._session.flush()
+
+        # Seed demo data for new merchants in dev/test when explicitly enabled.
+        # Safe: idempotent per merchant (checked inside seed_merchants_data),
+        # never runs in production, never exposes another merchant's data.
+        settings = get_settings()
+        if settings.app_env in ("development", "test", "demo") and settings.enable_demo_seeding:
+            seed_merchants_data(self._session, merchant)
+
         return merchant
 
     def authenticate_merchant(self, email: str, password: str) -> Optional[Merchant]:
@@ -213,8 +222,8 @@ class MerchantService:
                 message="Merchant not found",
                 status_code=404
             )
-
+        configured = self.is_webhook_configured(merchant_id)
         return {
-            "configured": merchant.razorpay_webhook_configured,
-            "lastVerified": None  # TODO: Add timestamp tracking
+            "configured": configured,
+            "lastVerified": None
         }

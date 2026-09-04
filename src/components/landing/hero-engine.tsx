@@ -265,11 +265,16 @@ export function HeroEngine() {
                   >
                     {String(i).padStart(2, "0")} · {s.label}
                   </p>
-                  {/* details: always on desktop, only active on mobile */}
-                  <div className={cn("lg:block", !active && !done && "hidden")}>
+                  {/* details: always on desktop, only active on mobile.
+                      Reserve a min-height so the predict count-up animation
+                      (which swaps "Recovery probability" for "74% recovery probability")
+                      and the stage 1 "Payment Failed" label don't shift the row. */}
+                  <div
+                    className={cn("min-h-[3rem] lg:min-h-[3.25rem] lg:block", !active && !done && "hidden")}
+                  >
                     <p
                       className={cn(
-                        "mt-1 text-sm font-medium transition-colors duration-500",
+                        "mt-1 text-sm font-medium leading-snug transition-colors duration-500",
                         "text-foreground",
                         isRecover && recovered && "text-success",
                       )}
@@ -279,7 +284,7 @@ export function HeroEngine() {
                     {body.meta && (
                       <p
                         className={cn(
-                          "num mt-0.5 text-xs transition-colors duration-500",
+                          "num mt-0.5 text-xs leading-snug transition-colors duration-500",
                           isRecover && recovered
                             ? "text-success"
                             : active || done

@@ -18,7 +18,7 @@ class Settings(BaseSettings):
         extra="ignore",
     )
 
-    app_env: Literal["development", "test", "production"] = "development"
+    app_env: Literal["development", "test", "demo", "production"] = "development"
 
     database_url: str = (
         "postgresql+psycopg://postgres:recoverai_dev@localhost:5432/recoverai"
@@ -51,6 +51,9 @@ class Settings(BaseSettings):
     # Rate limiting for authentication endpoints (Phase 26.5).
     # Default: 5 failed attempts per 60-second window, then 429.
     auth_rate_limit: str = "5/minute"
+
+    # Demo data seeding: only when explicitly enabled in dev/test.
+    enable_demo_seeding: bool = False
 
     @property
     def cors_origin_list(self) -> list[str]:

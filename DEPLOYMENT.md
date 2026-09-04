@@ -66,7 +66,7 @@ LOG_LEVEL=INFO
 
 # HMAC-SHA256 Auth Secret Key (JWT Token Signing)
 # Generate: python -c "import secrets; print(secrets.token_hex(32))"
-AUTH_SECRET_KEY=e4b7c8d9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7
+AUTH_SECRET_KEY=<generate-a-random-64-character-secret>
 
 # Fernet Encryption Key (Credential Storage at Rest)
 # Generate: python -c "from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())"

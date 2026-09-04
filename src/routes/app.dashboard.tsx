@@ -157,7 +157,7 @@ function DashboardPage() {
 
       {/* AI decision summary — command panel */}
       {decision && (
-        <WorkspaceGroup label="AI DECISION PANEL" title="Next Best Action" description="Highest expected-value recovery currently in the queue" as="section" className="rounded-xl border border-border-strong p-6 px-6 sm:px-5 animate-in fade-in slide-in-from-bottom-2 duration-500 ease-out transition-all duration-300 hover:border-border">
+        <WorkspaceGroup label="AI DECISION PANEL" title="Next Best Action" description="Highest expected-value recovery currently in the queue" as="section" className="rounded-xl border border-border-strong p-6 sm:px-5 animate-in fade-in slide-in-from-bottom-2 duration-500 ease-out transition-all duration-300 hover:border-border">
           <div className="flex flex-wrap items-start justify-between gap-4">
             <div>
               <p className="label-sm inline-flex items-center gap-2 text-muted-foreground">

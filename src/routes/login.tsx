@@ -42,7 +42,7 @@ function LoginPage() {
     setError("");
     setLoading(true);
     try {
-      await signIn(email, password);
+      await signIn(email.trim().toLowerCase(), password);
       toast.success("Welcome back", { description: "Signed in successfully" });
       navigate({ to: "/app/dashboard" });
     } catch (err: unknown) {
