@@ -8,6 +8,7 @@ import logging
 import time
 
 import uuid
+from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
@@ -41,6 +42,55 @@ def _configure_logging() -> None:
     )
 
 
+def _repair_demo_recovery_dates_on_startup() -> None:
+    """Idempotent startup hook that spreads the demo merchant's
+    RECOVERED payment dates across the intended multi-month window.
+
+    Why this exists:
+        The production database already contains the demo merchant and
+        its payments. The first-time seed path therefore never runs and
+        the demo dates are not updated. We instead run a narrowly-scoped
+        repair at app startup: it only touches the four well-known demo
+        payment ids belonging to the demo merchant, and it no-ops when
+        the demo merchant is absent or the rows are already correct.
+
+    Safety:
+        * Operates on a single merchant (by email).
+        * Only writes Payment.created_at on four specific external ids.
+        * Never deletes, never inserts, never touches other merchants.
+        * Does not require superuser PostgreSQL privileges — only the
+          UPDATE permission already held by the application role.
+        * Skipped when the demo merchant is absent (no error).
+    """
+    from app.database import get_session_factory
+    from app.seed import repair_demo_recovery_dates
+
+    factory = get_session_factory()
+    session = factory()
+    try:
+        repaired = repair_demo_recovery_dates(session)
+        session.commit()
+        if repaired:
+            logger.info(
+                "Startup demo-date repair: updated %d recovered payment(s) for the demo merchant.",
+                repaired,
+            )
+    except Exception:
+        # A failed repair must not block the app from starting.
+        session.rollback()
+        logger.exception("Startup demo-date repair failed; continuing without changes.")
+    finally:
+        session.close()
+
+
+@asynccontextmanager
+async def _lifespan(app: FastAPI):
+    # Run once on application startup. The hook is a no-op when the
+    # demo merchant is absent (e.g. local user-only databases).
+    _repair_demo_recovery_dates_on_startup()
+    yield
+
+
 def create_app() -> FastAPI:
     _configure_logging()
     settings = get_settings()
@@ -57,6 +107,7 @@ def create_app() -> FastAPI:
         ),
         docs_url=None if is_prod else "/docs",
         openapi_url=None if is_prod else "/openapi.json",
+        lifespan=_lifespan,
     )
 
     # Explicit configurable origins — never a wildcard for a payments API.

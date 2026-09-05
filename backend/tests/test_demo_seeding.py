@@ -333,3 +333,124 @@ def test_existing_merchant_isolation_tests_continue_passing(db_session: Session,
         select(Payment).where(Payment.merchant_id == merchant.id)
     ).all()
     assert len(payments) == 0  # No seeding occurred
+
+
+def test_repair_demo_recovery_dates():
+    """Test that repair_demo_recovery_dates spreads recovered payments across months."""
+    from app.seed import repair_demo_recovery_dates, _DEMO_MERCHANT_EMAIL, _DEMO_RECOVERED_DATES_HOURS
+    from app.database import get_session_factory
+    from app.models import Merchant, Payment
+    from app.models.enums import PaymentStatus
+    from sqlalchemy import select
+    from datetime import datetime, timezone
+
+    # Use a fresh session for testing
+    factory = get_session_factory()
+    session = factory()
+
+    try:
+        # First, seed the database to create demo merchant and payments
+        from app.seed import seed_database
+        # Temporarily override settings to allow seeding in test
+        import app.config
+        original_get_settings = app.config.get_settings
+
+        class TestSettings:
+            app_env = "test"
+            enable_demo_seeding = True
+            seed_demo_password = "test"
+
+        app.config.get_settings = lambda: TestSettings()
+
+        try:
+            seed_database(session)
+            session.commit()
+        finally:
+            app.config.get_settings = original_get_settings
+
+        # Verify demo merchant exists
+        demo_merchant = session.scalars(
+            select(Merchant).where(Merchant.email == _DEMO_MERCHANT_EMAIL)
+        ).first()
+        print(f"DEBUG: Demo merchant found: {demo_merchant is not None}")
+        if demo_merchant:
+            print(f"DEBUG: Demo merchant ID: {demo_merchant.id}")
+            print(f"DEBUG: Demo merchant email: {demo_merchant.email}")
+        assert demo_merchant is not None, "Demo merchant should exist after seeding"
+
+        # Verify we have the 4 recovered payments
+        recovered_payments = session.scalars(
+            select(Payment).where(
+                Payment.merchant_id == demo_merchant.id,
+                Payment.status == PaymentStatus.RECOVERED
+            )
+        ).all()
+        print(f"DEBUG: Found {len(recovered_payments)} recovered payments")
+        for p in recovered_payments:
+            print(f"DEBUG: Payment {p.external_payment_id}: {p.created_at}")
+        assert len(recovered_payments) == 4, f"Expected 4 recovered payments, got {len(recovered_payments)}"
+
+        # Record original dates
+        original_dates = {p.external_payment_id: p.created_at for p in recovered_payments}
+        print(f"DEBUG: Original dates: {original_dates}")
+
+        # Run the repair function
+        repaired_count = repair_demo_recovery_dates(session)
+        print(f"DEBUG: Repair function returned: {repaired_count}")
+        session.commit()
+
+        # Should have repaired all 4 payments
+        assert repaired_count == 4, f"Expected to repair 4 payments, got {repaired_count}"
+
+        # Verify dates have been updated and are spread across different months
+        updated_payments = session.scalars(
+            select(Payment).where(
+                Payment.merchant_id == demo_merchant.id,
+                Payment.status == PaymentStatus.RECOVERED
+            )
+        ).all()
+        print(f"DEBUG: After repair, found {len(updated_payments)} recovered payments")
+        for p in updated_payments:
+            print(f"DEBUG: Payment {p.external_payment_id}: {p.created_at}")
+
+        # Check that all dates were actually changed
+        for payment in updated_payments:
+            assert payment.created_at != original_dates[payment.external_payment_id], \
+                f"Date for payment {payment.external_payment_id} was not updated"
+
+        # Verify the dates are spread across different months (May-Aug 2026)
+        # Extract year-month from each date
+        months = set()
+        for payment in updated_payments:
+            # Convert to year-month string for comparison
+            month_key = payment.created_at.strftime("%Y-%m")
+            months.add(month_key)
+        print(f"DEBUG: Months found: {months}")
+
+        # Should have payments in multiple different months
+        assert len(months) > 1, f"Expected payments spread across multiple months, got months: {months}"
+
+        # Verify idempotency - running again should repair 0 payments
+        repaired_count_2 = repair_demo_recovery_dates(session)
+        print(f"DEBUG: Second repair call returned: {repaired_count_2}")
+        assert repaired_count_2 == 0, f"Expected 0 repairs on second call (idempotent), got {repaired_count_2}"
+
+    finally:
+        session.close()
+
+
+def test_repair_demo_recovery_dates_no_demo_merchant():
+    """Test that repair_demo_recovery_dates no-ops when demo merchant is absent."""
+    from app.seed import repair_demo_recovery_dates
+    from app.database import get_session_factory
+
+    # Use a fresh session (no demo merchant seeded)
+    factory = get_session_factory()
+    session = factory()
+
+    try:
+        # Should return 0 when no demo merchant exists
+        repaired = repair_demo_recovery_dates(session)
+        assert repaired == 0, f"Expected 0 repairs when no demo merchant, got {repaired}"
+    finally:
+        session.close()

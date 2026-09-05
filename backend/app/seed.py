@@ -242,6 +242,72 @@ AI_RECOVERY_RATE = 68.5
 
 def _canonical_action(token: str) -> RecommendedAction:
     return RecommendedAction("CUSTOMER_NOTIFICATION" if token == "NOTIFY" else token)
+
+
+# Demo merchant identifier — the only merchant whose payment dates the
+# startup repair is allowed to touch. This is hard-coded to the publicly
+# documented demo seed and never matches real user accounts.
+_DEMO_MERCHANT_EMAIL = MERCHANT_EMAIL
+
+# Intended multi-month spread for the four RECOVERED demo payments.
+# Hours before "now" → maps cleanly to May/Jun/Jul/Aug 2026 in the
+# production demo window. Used both during first-time seed and during
+# repair of an already-seeded database.
+_DEMO_RECOVERED_DATES_HOURS: dict[str, int] = {
+    "PAY_82845": 3000,  # ~125 days ago → May 2026
+    "PAY_82831": 2200,  # ~92 days ago  → June 2026
+    "PAY_82810": 1400,  # ~58 days ago  → July 2026
+    "PAY_82760": 700,   # ~29 days ago  → August 2026
+}
+
+
+def repair_demo_recovery_dates(session: Session) -> int:
+    """Update the demo merchant's RECOVERED payment `created_at` so the
+    dashboard's Revenue Trends chart spans multiple months.
+
+    Safe to call repeatedly on an already-seeded database: it only writes
+    the four well-known demo payment rows and never touches unrelated
+    payment records. Returns the number of rows actually changed.
+
+    Why this exists:
+        `seed_merchants_data` is only invoked on first-time seed and on
+        new merchant signup in dev/test/demo. In production the existing
+        demo merchant is created exactly once, so the date-spread branch
+        there is never reached. The application calls this function on
+        startup so the existing production database catches up to the
+        intended multi-month recovery trend without requiring a reset.
+    """
+    demo_merchant = session.scalars(
+        select(Merchant).where(Merchant.email == _DEMO_MERCHANT_EMAIL)
+    ).first()
+    if demo_merchant is None:
+        # No demo merchant in this database (could be a fresh test DB or a
+        # real production deployment with only user-created accounts).
+        # Either way, there's nothing to repair.
+        return 0
+
+    repaired = 0
+    for external_id, hours_ago in _DEMO_RECOVERED_DATES_HOURS.items():
+        payment = session.scalars(
+            select(Payment).where(
+                Payment.merchant_id == demo_merchant.id,
+                Payment.external_payment_id == external_id,
+            )
+        ).first()
+        if payment is None:
+            # First-time seed path will create it on the next call to
+            # seed_database(); nothing to repair yet.
+            continue
+        new_created_at = _hours_ago(hours_ago)
+        if payment.created_at != new_created_at:
+            payment.created_at = new_created_at
+            repaired += 1
+
+    if repaired:
+        session.flush()
+    return repaired
+
+
 def seed_merchants_data(session: Session, merchant: Merchant) -> None:
     """Seed demo dataset belonging ONLY to `merchant`. Idempotent by merchant scope."""
     existing_payments = session.scalars(
@@ -249,22 +315,19 @@ def seed_merchants_data(session: Session, merchant: Merchant) -> None:
 ).all()
 
     if existing_payments:
-        # Update the demo recovered-payment dates so the dashboard
-        # displays a meaningful multi-month recovery trend.
-        payment_dates = {
-            "PAY_82845": -3000,
-            "PAY_82831": -2200,
-            "PAY_82810": -1400,
-            "PAY_82760": -700,
-        }
-
-        for payment in existing_payments:
-            if payment.external_payment_id in payment_dates:
-                payment.created_at = _hours_ago(
-                    -payment_dates[payment.external_payment_id]
-                )
-
-        session.flush()
+        # The merchant already has data. On the demo merchant we repair
+        # the RECOVERED payment dates so the Revenue Trends chart spans
+        # the intended multi-month window. This branch is reached on
+        # subsequent calls to `seed_merchants_data` (e.g. test setup that
+        # reuses the same session), and the equivalent production path
+        # is `repair_demo_recovery_dates` invoked at app startup.
+        if merchant.email == _DEMO_MERCHANT_EMAIL:
+            for payment in existing_payments:
+                hours_ago = _DEMO_RECOVERED_DATES_HOURS.get(payment.external_payment_id)
+                if hours_ago is None:
+                    continue
+                payment.created_at = _hours_ago(hours_ago)
+            session.flush()
         return
 
     session.add(MerchantPolicy(merchant_id=merchant.id, **SEED_POLICIES))
