@@ -51,3 +51,5 @@ __pycache__/
 htmlcov/
 
 5min_vid_RecoverAI.mp4
+
+.claude/
