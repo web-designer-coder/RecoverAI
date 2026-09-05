@@ -126,7 +126,7 @@ function DashboardPage() {
     <div className="space-y-4">
       <header className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h1 className="headline-md text-white">Overview</h1>
+          <h1 className="headline-md text-foreground">Overview</h1>
           <p className="mt-1 text-[0.8125rem] text-muted-foreground">Revenue at risk and AI recovery performance</p>
         </div>
         <Link to="/app/recovery" className="btn-primary !py-2">
@@ -175,11 +175,11 @@ function DashboardPage() {
           </div>
           <div className="mt-4 grid grid-cols-2 gap-x-6 gap-y-3 border-t border-border pt-4 sm:grid-cols-3 xl:grid-cols-6">
             {[
-              ["Payment", <span className="num text-[0.8125rem] font-medium text-white">{decision.payment_id}</span>],
-              ["AI Confidence", <CountUp value={decision.confidence * 100} format={(n) => formatPct(n)} className="num text-[0.8125rem] font-semibold text-white" />],
-              ["Recovery Probability", <CountUp value={decision.recovery_probability * 100} format={(n) => formatPct(n)} className="num text-[0.8125rem] font-semibold text-white" />],
+              ["Payment", <span className="num text-[0.8125rem] font-medium text-foreground">{decision.payment_id}</span>],
+              ["AI Confidence", <CountUp value={decision.confidence * 100} format={(n) => formatPct(n)} className="num text-[0.8125rem] font-semibold text-foreground" />],
+              ["Recovery Probability", <CountUp value={decision.recovery_probability * 100} format={(n) => formatPct(n)} className="num text-[0.8125rem] font-semibold text-foreground" />],
               ["Expected Recovery", <CountUp value={decision.expected_recovery} format={formatINR} className="num text-[0.8125rem] font-semibold text-success" />],
-              ["Recommended Action", <span className="text-[0.8125rem] font-medium text-white">{ACTION_LABELS[decision.recommended_action]}</span>],
+              ["Recommended Action", <span className="text-[0.8125rem] font-medium text-foreground">{ACTION_LABELS[decision.recommended_action]}</span>],
               ["Optimal Window", <span className="num text-[0.75rem] text-muted-foreground">{decision.next_action_at ? formatDateTime(decision.next_action_at) : "—"}</span>],
             ].map(([label, node], i) => (
               <div key={i} className="transition-all duration-300 hover:translate-y-[-2px]">

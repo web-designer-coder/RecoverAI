@@ -10,14 +10,14 @@ export function injectLiquidGlassCSS() {
    ======================================================================== */
 .liquid-glass {
   position: relative;
-  background: rgba(13, 15, 22, 0.42);
+  background: rgba(255, 255, 255, 0.65);
   backdrop-filter: saturate(160%) blur(20px);
   -webkit-backdrop-filter: saturate(160%) blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(0, 0, 0, 0.06);
   box-shadow:
-    0 16px 48px -16px rgba(0, 0, 0, 0.55),
-    0 4px 12px -4px rgba(0, 0, 0, 0.4),
-    inset 0 0 0 1px rgba(255, 255, 255, 0.02);
+    0 16px 48px -16px rgba(0, 0, 0, 0.08),
+    0 4px 12px -4px rgba(0, 0, 0, 0.05),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.7);
   transition:
     background 0.25s ease,
     border-color 0.25s ease,
@@ -31,11 +31,11 @@ export function injectLiquidGlassCSS() {
   padding: 1px;
   background: linear-gradient(
     160deg,
-    rgba(255, 255, 255, 0.22) 0%,
-    rgba(255, 255, 255, 0.04) 28%,
+    rgba(255, 255, 255, 0.8) 0%,
+    rgba(255, 255, 255, 0.3) 28%,
     rgba(255, 255, 255, 0) 52%,
-    rgba(255, 255, 255, 0.08) 78%,
-    rgba(255, 255, 255, 0.18) 100%
+    rgba(255, 255, 255, 0.2) 78%,
+    rgba(255, 255, 255, 0.5) 100%
   );
   -webkit-mask:
     linear-gradient(#000 0 0) content-box,
@@ -63,12 +63,12 @@ export function injectLiquidGlassCSS() {
   transition: opacity 0.25s ease;
 }
 .liquid-glass:hover {
-  background: rgba(20, 24, 34, 0.5);
-  border-color: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.78);
+  border-color: rgba(0, 0, 0, 0.12);
   box-shadow:
-    0 20px 56px -16px rgba(0, 0, 0, 0.6),
-    0 6px 16px -4px rgba(0, 0, 0, 0.45),
-    inset 0 0 0 1px rgba(255, 255, 255, 0.04);
+    0 20px 56px -16px rgba(0, 0, 0, 0.12),
+    0 6px 16px -4px rgba(0, 0, 0, 0.08),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.8);
 }
 .liquid-glass:hover::before { opacity: 1; }
 .liquid-glass:hover::after  { opacity: 1; }

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { Link, useNavigate } from "@tanstack/react-router";
+import { Link, useNavigate, useRouter } from "@tanstack/react-router";
 import { Menu, X } from "lucide-react";
-import { Logo } from "./brand";
+import { Logo, LandingLogo } from "./brand";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/lib/auth";
 
@@ -36,9 +36,9 @@ export function SiteNavbar() {
         "liquid-glass"
       )}
     >
-      <nav className="container-grid flex h-16 items-center justify-between" aria-label="Main">
+      <nav className="container-grid flex h-16 items-center justify-between overflow-x-hidden" aria-label="Main">
         <Link to="/" aria-label="RecoverAI home" onClick={() => setOpen(false)}>
-          <Logo />
+          <LandingLogo />
         </Link>
 
         <div className="nav-track hidden md:flex">

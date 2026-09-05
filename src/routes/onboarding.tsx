@@ -1,6 +1,6 @@
 import { createFileRoute, Link, redirect, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
-import { Logo } from "@/components/brand";
+import { LandingLogo } from "@/components/brand";
 import { useAuth } from "@/lib/auth";
 
 export const Route = createFileRoute("/onboarding")({
@@ -61,7 +61,7 @@ function OnboardingPage() {
     <div className="grid-bg flex min-h-screen items-center justify-center bg-background px-4 py-16">
       <div className="w-full max-w-lg">
         <Link to="/" className="mx-auto block w-fit">
-          <Logo />
+          <LandingLogo size="auth" />
         </Link>
         <div className="mt-8 rounded-xl bg-surface border border-border p-7 shadow-[0_16px_40px_-20px_rgb(18_20_22/0.6)]">
           <div className="mb-6 flex items-center justify-between">

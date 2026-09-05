@@ -17,7 +17,7 @@ import {
   ShieldCheck,
   FlaskConical,
 } from "lucide-react";
-import { LogoMark } from "@/components/brand";
+import { LogoMark, LandingLogo } from "@/components/brand";
 import { Skeleton } from "@/components/states";
 import { Toaster } from "@/components/ui/sonner";
 import { CommandPalette } from "@/components/ui/command-palette";
@@ -83,13 +83,13 @@ const NAV_ITEMS: NavItem[] = [
    ----------------------------------------------------------------------- */
 function ShellGate() {
   return (
-    <div className="min-h-screen flex items-start justify-center p-4 lg:p-8 bg-[#07090e]">
+    <div className="min-h-screen flex items-start justify-center p-4 lg:p-8 bg-app-canvas">
       <div
         className="app-surface w-full max-w-[1728px] overflow-hidden"
         aria-busy="true"
         aria-label="Loading RecoverAI"
       >
-        <div className="flex h-[68px] items-center gap-4 border-b border-[rgb(255_255_255/0.06)] px-6">
+        <div className="flex h-[68px] items-center gap-4 border-b border-border px-6">
           <Skeleton className="h-7 w-36" />
           <Skeleton className="h-8 w-80 rounded-full" />
           <div className="ml-auto flex items-center gap-3">
@@ -101,7 +101,7 @@ function ShellGate() {
           <Skeleton className="h-10 w-64" />
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 xl:grid-cols-3">
             {Array.from({ length: 3 }, (_, i) => (
-              <div key={i} className="rounded-xl bg-white/[0.03] p-5">
+              <div key={i} className="rounded-xl border border-border bg-surface p-5">
                 <Skeleton className="h-3 w-20" />
                 <Skeleton className="mt-3 h-6 w-24" />
               </div>
@@ -171,7 +171,7 @@ function MobileNavSheet({
     <Sheet open={open} onOpenChange={(o) => !o && onClose()}>
       <SheetContent
         side="bottom"
-        className="rounded-t-2xl border-t border-[rgb(255_255_255/0.08)] bg-[#0d1018] pb-8"
+        className="rounded-t-2xl border-t border-border bg-surface pb-8"
       >
         <SheetHeader className="sr-only">
           <SheetTitle>Navigation</SheetTitle>
@@ -179,7 +179,7 @@ function MobileNavSheet({
         <nav aria-label="Console navigation" className="mt-4 space-y-5">
           {groups.map(({ key, label, items }) => (
             <div key={key}>
-              <p className="label-sm mb-2 px-1 text-[#6b7080]">{label}</p>
+              <p className="label-sm mb-2 px-1 text-muted-foreground">{label}</p>
               <div className="space-y-1">
                 {items.map((item) => {
                   const isActive =
@@ -194,13 +194,13 @@ function MobileNavSheet({
                       className={cn(
                         "flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium transition-all",
                         isActive
-                          ? "bg-white/[0.06] text-[#eaedf3] ring-1 ring-white/10"
-                          : "text-[#9498a6] hover:bg-white/[0.04] hover:text-[#eaedf3]",
+                          ? "bg-surface-high text-foreground ring-1 ring-border-strong"
+                          : "text-muted-foreground hover:bg-surface-high hover:text-foreground",
                       )}
                       aria-current={isActive ? "page" : undefined}
                     >
                       <item.icon
-                        className={cn("h-4 w-4 shrink-0", isActive ? "text-[#eaedf3]" : "text-[#6b7080]")}
+                        className={cn("h-4 w-4 shrink-0", isActive ? "text-foreground" : "text-faint")}
                         aria-hidden="true"
                       />
                       {item.label}
@@ -291,7 +291,7 @@ function TopSearch() {
     <div ref={containerRef} className="relative hidden sm:block">
       <div className="relative">
         <svg
-          className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#6b7080]"
+          className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-faint"
           viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"
@@ -312,9 +312,9 @@ function TopSearch() {
           aria-expanded={open && searching}
           aria-controls="top-search-results"
           aria-autocomplete="list"
-          className="w-52 rounded-full border border-[rgb(255_255_255/0.08)] bg-white/[0.04] py-2 pl-9 pr-10 text-sm text-[#eaedf3] placeholder-[#6b7080] outline-none transition-all duration-200 focus:w-72 focus:border-white/20 focus:bg-white/[0.06] focus:ring-2 focus:ring-white/10"
+          className="w-52 rounded-full border border-border bg-surface py-2 pl-9 pr-10 text-sm text-foreground placeholder-faint outline-none transition-all duration-200 focus:w-72 focus:border-foreground/20 focus:bg-surface-high focus:ring-2 focus:ring-foreground/10"
         />
-        <kbd className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 rounded border border-[rgb(255_255_255/0.1)] bg-[#1a1e28] px-1.5 py-0.5 font-mono text-[0.625rem] text-[#6b7080]">
+        <kbd className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 rounded border border-border bg-surface-high px-1.5 py-0.5 font-mono text-[0.625rem] text-faint">
           ⌘K
         </kbd>
       </div>
@@ -322,23 +322,23 @@ function TopSearch() {
       {open && searching && (
         <div
           id="top-search-results"
-          className="absolute right-0 top-full z-50 mt-2 w-80 overflow-hidden rounded-2xl border border-[rgb(255_255_255/0.08)] bg-[#12151c] shadow-[0_24px_64px_-24px_rgb(0_0_0/0.8)]"
+          className="absolute right-0 top-full z-50 mt-2 w-80 overflow-hidden rounded-2xl border border-border bg-surface shadow-[0_24px_64px_-24px_rgba(0,0,0,0.12)]"
           role="listbox"
           aria-label="Search results"
         >
           {results && results.length > 0 ? (
-            <ul className="divide-y divide-[rgb(255_255_255/0.06)]">
+            <ul className="divide-y divide-border">
               {results.map((p) => (
                 <li key={p.payment_id}>
                   <button
                     onClick={() => go(p.payment_id)}
-                    className="flex w-full items-center justify-between gap-3 px-4 py-3 text-left transition-colors hover:bg-white/[0.04]"
+                    className="flex w-full items-center justify-between gap-3 px-4 py-3 text-left transition-colors hover:bg-surface-high"
                   >
                     <span className="min-w-0">
-                      <span className="num block truncate text-sm font-medium text-[#eaedf3]">
+                      <span className="num block truncate text-sm font-medium text-foreground">
                         {p.payment_id}
                       </span>
-                      <span className="num block truncate text-xs text-[#6b7080]">
+                      <span className="num block truncate text-xs text-muted-foreground">
                         {p.customer_id} · ₹{(p.amount / 100).toLocaleString("en-IN")}
                       </span>
                     </span>
@@ -360,8 +360,8 @@ function TopSearch() {
             </ul>
           ) : (
             <div className="px-4 py-6 text-center">
-              <p className="text-sm font-medium text-[#eaedf3]">No payment found</p>
-              <p className="mt-1 text-xs text-[#9498a6]">
+              <p className="text-sm font-medium text-foreground">No payment found</p>
+              <p className="mt-1 text-xs text-muted-foreground">
                 Try a payment ID (PAY_xxxxx) or customer ID (cust_xxxxx).
               </p>
             </div>
@@ -409,7 +409,7 @@ function NotificationsMenu() {
         onClick={() => setOpen((v) => !v)}
         aria-label="Notifications"
         aria-expanded={open}
-        className="relative grid h-9 w-9 shrink-0 place-items-center rounded-full text-[#9498a6] transition-all duration-200 hover:bg-white/[0.06] hover:text-[#eaedf3] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2 focus-visible:ring-offset-[#0d1018]"
+        className="relative grid h-9 w-9 shrink-0 place-items-center rounded-full text-faint transition-all duration-200 hover:bg-surface-high hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2 focus-visible:ring-offset-background"
       >
         <svg
           className="h-4 w-4"
@@ -423,24 +423,24 @@ function NotificationsMenu() {
           <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
         <span
-          className="absolute right-1 top-1 h-1.5 w-1.5 rounded-full bg-[#f87171] animate-pulse"
+          className="absolute right-1 top-1 h-1.5 w-1.5 rounded-full bg-error animate-pulse"
           aria-hidden="true"
         />
       </button>
 
       {open && (
-        <div className="absolute right-0 top-full z-50 mt-2 w-80 overflow-hidden rounded-2xl border border-[rgb(255_255_255/0.08)] bg-[#12151c] shadow-[0_24px_64px_-24px_rgb(0_0_0/0.8)]">
-          <p className="label-sm border-b border-[rgb(255_255_255/0.06)] px-4 py-3 text-[#9498a6]">
+        <div className="absolute right-0 top-full z-50 mt-2 w-80 overflow-hidden rounded-2xl border border-border bg-surface shadow-[0_24px_64px_-24px_rgba(0,0,0,0.12)]">
+          <p className="label-sm border-b border-border px-4 py-3 text-muted-foreground">
             Recent Activity
           </p>
           {events === null ? (
-            <p className="px-4 py-5 text-center text-sm text-[#9498a6]">Loading recent activity…</p>
+            <p className="px-4 py-5 text-center text-sm text-muted-foreground">Loading recent activity…</p>
           ) : events.length === 0 ? (
-            <p className="px-4 py-5 text-center text-sm text-[#9498a6]">
+            <p className="px-4 py-5 text-center text-sm text-muted-foreground">
               No activity yet — events appear as recoveries run.
             </p>
           ) : (
-            <ul className="divide-y divide-[rgb(255_255_255/0.06)]">
+            <ul className="divide-y divide-border">
               {events.map((e) => (
                 <li key={e.id}>
                   <button
@@ -448,10 +448,10 @@ function NotificationsMenu() {
                       setOpen(false);
                       navigate({ to: "/app/recovery/$id", params: { id: e.payment_id } });
                     }}
-                    className="block w-full px-4 py-3 text-left transition-all hover:bg-white/[0.04] hover:pl-5"
+                    className="block w-full px-4 py-3 text-left transition-all duration-150 hover:bg-surface-high hover:pl-5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-inset"
                   >
-                    <p className="truncate text-sm text-[#eaedf3]">{e.summary}</p>
-                    <p className="num mt-0.5 text-xs text-[#6b7080]">
+                    <p className="truncate text-sm text-foreground">{e.summary}</p>
+                    <p className="num mt-0.5 text-xs text-muted-foreground">
                       {e.payment_id} · {e.timestamp}
                     </p>
                   </button>
@@ -488,25 +488,21 @@ function ProfileMenu() {
   }, [open]);
 
   return (
-    <div ref={containerRef} className="relative">
+    <div ref={containerRef} className="relative isolate">
       <button
         onClick={() => setOpen((v) => !v)}
         aria-label="Account menu"
         aria-expanded={open}
-        className="flex items-center gap-2 rounded-full px-2.5 py-1.5 transition-colors duration-150 hover:bg-white/[0.06] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2 focus-visible:ring-offset-[#0d1018]"
+        className="flex items-center gap-2 rounded-lg px-2.5 py-2 transition-colors duration-150 hover:bg-surface-high focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2 focus-visible:ring-offset-background"
       >
-        <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-[#eaeef5] text-[#0c0e14] text-[0.625rem] font-bold shadow-[0_0_0_1px_rgba(255,255,255,0.08)]">
+        <span className="grid h-6 w-6 shrink-0 place-items-center rounded-full bg-[#eaeef5] text-[#0c0e14] text-[0.625rem] font-bold shadow-[0_0_0_1px_rgba(255,255,255,0.08)]">
           {initial}
         </span>
         <svg
           className={cn(
-            "hidden h-3.5 w-3.5 text-[#9498a6] transition-all duration-200 lg:block",
+            "h-3.5 w-3.5 text-muted-foreground transition-all duration-200",
             open && "rotate-180",
           )}
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
           aria-hidden="true"
         >
           <path d="m6 9 6 6 6-6" strokeLinecap="round" strokeLinejoin="round" />
@@ -514,12 +510,12 @@ function ProfileMenu() {
       </button>
 
       {open && (
-        <div className="absolute right-0 top-full z-[60] mt-2 w-64 rounded-2xl border border-[rgb(255_255_255/0.08)] bg-[#12151c] shadow-[0_24px_64px_-24px_rgb(0_0_0/0.8)]">
-          <div className="border-b border-[rgb(255_255_255/0.06)] px-4 py-3">
-            <p className="truncate text-sm font-medium text-[#eaedf3]">
+        <div className="absolute right-0 top-full z-[60] mt-2 w-64 animate-in fade-in slide-in-from-top-2 duration-200 ease-out rounded-xl bg-surface border border-border shadow-[0_16px_40px_-20px_rgb(18_20_22/0.6)]">
+          <div className="border-b border-border px-4 py-3">
+            <p className="truncate text-sm font-medium text-foreground">
               {session?.businessName ?? "Merchant"}
             </p>
-            <p className="num truncate text-xs text-[#9498a6]">{session?.email ?? "—"}</p>
+            <p className="num truncate text-xs text-muted-foreground">{session?.email ?? "—"}</p>
           </div>
           <div className="p-1.5">
             <button
@@ -527,7 +523,7 @@ function ProfileMenu() {
                 setOpen(false);
                 navigate({ to: "/app/settings" });
               }}
-              className="w-full rounded-xl px-3 py-2.5 text-left text-sm text-[#eaedf3] transition-all hover:bg-white/[0.06] hover:pl-4"
+              className="w-full rounded-lg px-2.5 py-2 text-left text-sm text-foreground transition-all duration-150 hover:bg-surface-high hover:pl-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-inset"
             >
               Settings
             </button>
@@ -535,11 +531,11 @@ function ProfileMenu() {
               onClick={() => {
                 setOpen(false);
                 import("@/lib/auth").then(({ signOut }) => signOut());
-                navigate({ to: "/" });
+                navigate({ to: "/login" });
               }}
-              className="flex w-full items-center gap-2 rounded-xl px-3 py-2.5 text-left text-sm text-[#f87171] transition-all hover:bg-white/[0.06] hover:pl-4"
+              className="flex w-full items-center gap-2 rounded-lg px-2.5 py-2 text-left text-sm text-error transition-all duration-150 hover:bg-surface-high hover:pl-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-error focus-visible:ring-inset"
             >
-              <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+              <svg className="h-3.5 w-3.5" aria-hidden="true">
                 <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" strokeLinecap="round" strokeLinejoin="round" />
                 <polyline points="16 17 21 12 16 7" strokeLinecap="round" strokeLinejoin="round" />
                 <line x1="21" y1="12" x2="9" y2="12" strokeLinecap="round" />
@@ -662,13 +658,13 @@ function AppLayout() {
       {/* Skip to main content */}
       <a
         href="#content"
-        className="sr-only focus:not-sr-only focus:fixed focus:inset-x-0 focus:top-0 focus:z-[100] focus:bg-[#0d1018] focus:py-3 focus:text-center focus:text-sm focus:font-medium focus:text-[#eaedf3] focus:outline-none focus:ring-2 focus:ring-white"
+        className="sr-only focus:not-sr-only focus:fixed focus:inset-x-0 focus:top-0 focus:z-[100] focus:bg-[var(--color-background)] focus:py-3 focus:text-center focus:text-sm focus:font-medium focus:text-foreground focus:outline-none focus:ring-2 focus:ring-foreground"
       >
         Skip to content
       </a>
 
-      {/* Outer dark canvas */}
-      <div className="min-h-screen bg-[#07090e] p-2 sm:p-3 lg:p-4">
+      {/* Outer canvas */}
+      <div className="min-h-screen app-canvas p-2 sm:p-3 lg:p-4">
         {/* Floating app surface */}
         <div className="app-surface mx-auto w-full max-w-[1728px] overflow-hidden">
           {/* ---------- Integrated top nav ---------- */}
@@ -677,7 +673,7 @@ function AppLayout() {
             <button
               onClick={() => setMobileNavOpen(true)}
               aria-label="Open navigation"
-              className="grid h-9 w-9 shrink-0 place-items-center rounded-xl text-[#9498a6] transition-all duration-200 hover:bg-white/[0.06] hover:text-[#eaedf3] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2 focus-visible:ring-offset-[#0d1018] lg:hidden"
+              className="grid h-9 w-9 shrink-0 place-items-center rounded-xl text-muted-foreground transition-all duration-200 hover:bg-surface-high hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground focus-visible:ring-offset-2 focus-visible:ring-offset-background lg:hidden"
             >
               <Menu className="h-4 w-4" aria-hidden="true" />
             </button>
@@ -685,12 +681,9 @@ function AppLayout() {
             {/* Logo */}
             <Link
               to="/app/dashboard"
-              className="flex items-center gap-2 rounded-xl px-1 py-1 transition-all duration-200 hover:bg-white/[0.04] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground"
+              className="flex items-center gap-2 rounded-xl px-1 py-1 transition-all duration-200 hover:bg-surface-high focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground"
             >
-              <LogoMark />
-              <span className="font-display text-[0.9375rem] font-bold tracking-tight text-[#eaedf3] sm:text-[1.05rem]">
-                Recover<span className="text-[#9498a6]">AI</span>
-              </span>
+              <LandingLogo size="app" />
             </Link>
 
             {/* Desktop segmented nav cluster */}

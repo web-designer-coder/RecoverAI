@@ -41,15 +41,15 @@ export function Hero() {
         <div className="grid items-center gap-14 lg:grid-cols-12 lg:gap-10">
           {/* left: copy + CTAs */}
           <Reveal className="lg:col-span-5">
-            <h1 className="display-xl text-foreground">
+            <h1 className="display-2xl text-foreground leading-[1.05] tracking-[-0.04em]">
               Revenue
               <br />
               shouldn’t
               <br />
-              disappear.
+              <span className="font-editorial italic">disappear.</span>
             </h1>
 
-            <p className="mt-7 max-w-md text-[1.0625rem] leading-[1.55] text-[#9ca3af]">
+            <p className="mt-8 max-w-[30ch] text-[1.3125rem] font-medium leading-[1.45] tracking-[-0.01em] text-foreground sm:text-[1.375rem] sm:max-w-[35ch] lg:text-[1.5rem] lg:max-w-[34ch]">
               RecoverAI analyses every failed payment, understands the
               customer and failure context, predicts the best recovery action
               — and executes it within your policies.
@@ -84,8 +84,8 @@ export function Hero() {
                 { k: "Decision latency", v: "120ms" },
                 { k: "Actions audited", v: "100%" },
               ].map((s) => (
-                <div key={s.k}>
-                  <dt className="label-sm text-[#6f7683]">{s.k}</dt>
+                <div key={s.k} className="flex flex-col">
+                  <dt className="label-sm min-h-[2.4em] text-[#6f7683]">{s.k}</dt>
                   <dd className="num mt-1.5 text-[1.5rem] font-semibold tracking-tight text-foreground">
                     {s.v}
                   </dd>
@@ -124,7 +124,7 @@ export function Problem() {
           <p className="mt-3 font-display text-lg font-semibold text-foreground sm:text-xl">
             lost every month to failed payments
           </p>
-          <p className="mt-4 max-w-md text-[1rem] leading-[1.6] text-[#9ca3af]">
+          <p className="mt-4 max-w-md text-[1.0625rem] leading-[1.55] text-muted-foreground">
             Traditional retries treat all failures the same. RecoverAI determines
             what each payment needs — the right action, at the right moment.
           </p>
@@ -342,7 +342,7 @@ export function DecisionShowcase() {
             <br />
             <span className="text-muted-foreground">explained.</span>
           </h2>
-          <p className="mt-5 max-w-md text-[1rem] leading-[1.6] text-[#9ca3af]">
+          <p className="mt-5 max-w-md text-[1.0625rem] leading-[1.55] text-muted-foreground">
             RecoverAI doesn’t just act — it shows its reasoning. The
             customer, the failure, the prediction and the policy that
             authorised the action are all surfaced before a single rupee
@@ -352,8 +352,8 @@ export function DecisionShowcase() {
 
         {/* right: intelligence composition — Why this decision? */}
         <Reveal className="lg:col-span-7" delay={120}>
-          <div className="relative rounded-2xl border border-white/[0.06] bg-[#0c0d12]/80 p-6 sm:p-8 backdrop-blur-sm">
-            <div className="flex items-center justify-between border-b border-white/[0.06] pb-4">
+          <div className="relative rounded-2xl border border-border p-6 sm:p-8 backdrop-blur-sm">
+            <div className="flex items-center justify-between border-b border-border pb-4">
               <div className="flex items-center gap-2.5">
                 <span className="grid h-6 w-6 place-items-center rounded-md bg-ai/10 text-ai">
                   <Sparkles className="h-3.5 w-3.5" strokeWidth={1.8} />
@@ -403,7 +403,7 @@ export function DecisionShowcase() {
               ))}
             </dl>
 
-            <div className="mt-7 flex flex-wrap items-baseline justify-between gap-3 border-t border-white/[0.06] pt-5">
+            <div className="mt-7 flex flex-wrap items-baseline justify-between gap-3 border-t border-border pt-5">
               <div>
                 <p className="label-sm text-[#6f7683]">Recovery probability</p>
                 <p
@@ -443,7 +443,7 @@ export function Comparison() {
           <h2 className="headline-lg text-foreground">
             Recover more than traditional retries.
           </h2>
-          <p className="mt-5 max-w-md text-[1rem] leading-[1.6] text-[#9ca3af]">
+          <p className="mt-5 max-w-md text-[1.0625rem] leading-[1.55] text-muted-foreground">
             Every recovery is measured against a static-retry baseline on the
             same payment population — so the lift is real, not modelled
             optimism.
@@ -465,13 +465,13 @@ export function Comparison() {
 
         {/* right: chart + metrics */}
         <Reveal className="lg:col-span-7" delay={120}>
-          <div className="relative rounded-2xl border border-white/[0.06] bg-[#0c0d12]/80 p-6 sm:p-8 backdrop-blur-sm">
+          <div className="relative rounded-2xl border border-border p-6 sm:p-8 backdrop-blur-sm">
             {/* chart */}
             <CompareBars staticValue={1110000} aiValue={1430000} className="mb-6" />
             {/* metrics grid */}
             <div className="grid gap-6 sm:grid-cols-2">
               {/* static recovery rate */}
-              <div className="rounded-xl border border-white/[0.06] bg-[#0c0d12]/80 p-5 backdrop-blur-sm">
+              <div className="rounded-xl border border-border p-5 backdrop-blur-sm">
                 <p className="label-sm text-[#6f7683]">Static recovery rate</p>
                 <p className="mt-2 text-[1.875rem] font-semibold text-muted-foreground">
                   <CountUp
@@ -485,7 +485,7 @@ export function Comparison() {
                 </p>
               </div>
               {/* AI recovery rate */}
-              <div className="rounded-xl border border-white/[0.06] bg-[#0c0d12]/80 p-5 backdrop-blur-sm">
+              <div className="rounded-xl border border-border p-5 backdrop-blur-sm">
                 <p className="label-sm text-[#6f7683]">RecoverAI recovery rate</p>
                 <p className="mt-2 text-[1.875rem] font-semibold text-foreground">
                   <CountUp
@@ -552,7 +552,7 @@ export function Guardrails() {
         <div className="grid gap-12 lg:grid-cols-2 lg:items-start">
           {/* left: decision flow */}
           <Reveal>
-            <div className="rounded-2xl border border-white/[0.06] bg-[#0c0d12]/80 p-6 backdrop-blur-sm">
+            <div className="rounded-2xl border border-border p-6 backdrop-blur-sm">
               <p className="label-sm text-[#6f7683]">How an action is taken</p>
 
               {/* AI step */}
@@ -575,7 +575,7 @@ export function Guardrails() {
 
               {/* Policy step */}
               <div className="flex items-start gap-4">
-                <div className="grid h-10 w-10 shrink-0 place-items-center rounded-lg border border-white/[0.06] bg-white/[0.03] text-muted-foreground">
+                <div className="grid h-10 w-10 shrink-0 place-items-center rounded-lg border border-border bg-white/[0.03] text-muted-foreground">
                   <ShieldCheck className="h-5 w-5" strokeWidth={1.8} />
                 </div>
                 <div className="pt-1.5">
@@ -617,7 +617,7 @@ export function Guardrails() {
             <div className="grid gap-3 sm:grid-cols-2">
               {POLICY_EXAMPLES.map((p, i) => (
                 <Reveal key={p.name} delay={i * 50}>
-                  <div className="group flex items-start gap-3.5 rounded-xl border border-white/[0.06] bg-[#0c0d12]/60 p-4 transition-colors duration-300 hover:border-ai/20 hover:bg-[#0c0d12]/80">
+                  <div className="group flex items-start gap-3.5 rounded-xl border border-border bg-white/[0.04] p-4 transition-colors duration-300 hover:border-ai/20 hover:bg-white/[0.06]">
                     <span className="grid h-8 w-8 shrink-0 place-items-center rounded-lg border border-ai/20 bg-ai/10 text-ai">
                       <p.icon className="h-4 w-4" strokeWidth={1.6} />
                     </span>
@@ -702,7 +702,7 @@ export function ProductPreview() {
         />
 
         <Reveal className="mt-14">
-          <div className="relative mx-auto max-w-5xl overflow-hidden rounded-2xl border border-white/[0.06] bg-[#0c0d12]/80 shadow-[0_32px_64px_-24px_rgba(0,0,0,0.5)] backdrop-blur-sm">
+          <div className="relative mx-auto max-w-5xl overflow-hidden rounded-2xl border border-border bg-surface shadow-[0_32px_64px_-24px_rgba(0,0,0,0.5)] backdrop-blur-sm">
             {/* window chrome */}
             <div
               className="flex items-center gap-2 border-b border-white/[0.06] px-4 py-2.5"
@@ -768,7 +768,7 @@ export function ProductPreview() {
                 {/* metric strip */}
                 <div className="mt-4 grid grid-cols-2 gap-px overflow-hidden rounded-lg border border-white/[0.06] bg-white/[0.06] lg:grid-cols-4">
                   {PREVIEW_METRICS.map((m) => (
-                    <div key={m.label} className="bg-[#0c0d12]/80 px-3 py-2.5">
+                    <div key={m.label} className="bg-paper px-3 py-2.5">
                       <p className="label-sm truncate text-[0.6875rem] text-[#6f7683]">
                         {m.label}
                       </p>
@@ -786,7 +786,7 @@ export function ProductPreview() {
 
                 {/* chart + AI decision */}
                 <div className="mt-3 grid gap-3 lg:grid-cols-5">
-                  <div className="rounded-lg border border-white/[0.06] bg-[#0c0d12]/60 p-3.5 lg:col-span-3">
+                  <div className="rounded-lg border border-border bg-paper/60 p-3.5 lg:col-span-3">
                     <p className="label-sm text-[0.6875rem] text-[#6f7683]">
                       Recovered vs Baseline
                     </p>
@@ -836,7 +836,7 @@ export function ProductPreview() {
                 </div>
 
                 {/* active recoveries */}
-                <div className="mt-3 overflow-hidden rounded-lg border border-white/[0.06] bg-[#0c0d12]/60">
+                <div className="mt-3 overflow-hidden rounded-lg border border-border bg-paper/60">
                   <p className="label-sm border-b border-white/[0.06] px-3.5 py-2 text-[0.6875rem] text-[#6f7683]">
                     Active Recoveries
                   </p>
@@ -911,7 +911,7 @@ export function SimulatorTeaser() {
         />
 
         <Reveal className="mt-14">
-          <div className="mx-auto max-w-4xl rounded-2xl border border-white/[0.06] bg-[#0c0d12]/80 p-6 sm:p-8 backdrop-blur-sm shadow-[0_24px_48px_-24px_rgba(0,0,0,0.4)]">
+          <div className="mx-auto max-w-4xl rounded-2xl border border-border bg-paper/80 p-6 sm:p-8 backdrop-blur-sm shadow-[0_24px_48px_-24px_rgba(0,0,0,0.4)]">
             <div className="grid gap-8 sm:grid-cols-2 sm:gap-10 lg:grid-cols-4 lg:gap-6">
               {steps.map((s, i) => (
                 <div key={s.label} className="relative">
@@ -966,7 +966,7 @@ export function FinalCta() {
             <br />
             Recover it.
           </h2>
-          <p className="mt-6 mx-auto max-w-md text-[1.0625rem] leading-[1.55] text-[#9ca3af]">
+          <p className="mt-6 mx-auto max-w-md text-[1.0625rem] leading-[1.55] text-muted-foreground">
             Start with the simulator or enter the dashboard. No credit card required.
           </p>
           <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">

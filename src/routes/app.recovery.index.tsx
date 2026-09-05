@@ -342,9 +342,9 @@ function RecoveryQueue() {
                       <td className="px-5 py-3">
                         <PriorityDot priority={p.priority} />
                       </td>
-                      <td className="num px-5 py-3 font-medium text-white">{p.payment_id}</td>
+                      <td className="num px-5 py-3 font-medium text-foreground">{p.payment_id}</td>
                       <td className="num px-5 py-3 text-muted-foreground">{p.customer_id}</td>
-                      <td className="num px-5 py-3 text-white">{formatINR(p.amount)}</td>
+                      <td className="num px-5 py-3 text-foreground">{formatINR(p.amount)}</td>
                       <td className="max-w-[180px] truncate px-5 py-3 text-muted-foreground" title={p.failure_reason}>
                         {FAILURE_LABELS[p.failure_category]}
                       </td>

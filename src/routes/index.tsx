@@ -7,8 +7,6 @@ import {
   Workflow,
   DecisionShowcase,
   Comparison,
-  Guardrails,
-  ProductPreview,
   SimulatorTeaser,
   FinalCta,
 } from "@/components/landing/sections-a";
@@ -27,8 +25,6 @@ function Index() {
         <Workflow />
         <DecisionShowcase />
         <Comparison />
-        <Guardrails />
-        <ProductPreview />
         <SimulatorTeaser />
         <FinalCta />
       </main>

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { createFileRoute, Link, redirect, useNavigate } from "@tanstack/react-router";
 import { Loader2 } from "lucide-react";
-import { Logo } from "@/components/brand";
+import { LandingLogo } from "@/components/brand";
 import { getSession, signIn, useAuth } from "@/lib/auth";
 import { toast } from "sonner";
 
@@ -57,9 +57,14 @@ function LoginPage() {
   return (
     <div className="grid-bg flex min-h-screen items-center justify-center bg-background px-4 py-16">
       <div className="w-full max-w-md">
-        <Link to="/" className="mx-auto block w-fit">
-          <Logo />
-        </Link>
+        <div className="mb-4 flex items-center justify-between">
+          <Link to="/" className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground">
+            ← Back to RecoverAI
+          </Link>
+          <Link to="/" className="flex items-center">
+            <LandingLogo size="auth" />
+          </Link>
+        </div>
         <div className="mt-8 rounded-xl bg-surface border border-border p-7 shadow-[0_16px_40px_-20px_rgb(18_20_22/0.6)]">
           <h1 className="headline-md text-foreground">Sign in</h1>
           <p className="mt-2 text-[0.8125rem] text-muted-foreground">
