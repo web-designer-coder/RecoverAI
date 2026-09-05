@@ -60,18 +60,32 @@ async function apiFetch<T>(endpoint: string, options: RequestInit = {}): Promise
     headers['Authorization'] = `Bearer ${token}`;
   }
 
+  // Set up timeout controller
+  const timeout = options.timeout as number | undefined;
+  const controller = new AbortController();
+  const timeoutId = timeout && setTimeout(() => controller.abort(), timeout);
+
   let response: Response;
   try {
     response = await fetch(`${API_BASE_URL}${endpoint}`, {
       ...options,
       headers,
+      signal: controller.signal,
     });
   } catch (err) {
+    // Clear timeout on error
+    if (timeoutId) clearTimeout(timeoutId);
     // Network failure — fetch throws TypeError on DNS/CORS/offline
     if (err instanceof TypeError && String(err.message).includes('Failed to fetch')) {
       throw new ApiError('NETWORK_ERROR', 'Network error — please check your connection and try again', 0);
     }
+    if (err.name === 'AbortError') {
+      throw new ApiError('TIMEOUT_ERROR', 'Request timed out — please check your connection and try again', 0);
+    }
     throw new ApiError('NETWORK_ERROR', 'Unable to reach the server', 0);
+  } finally {
+    // Clear timeout if request completed
+    if (timeoutId) clearTimeout(timeoutId);
   }
 
   if (!response.ok) {
@@ -605,6 +619,30 @@ function transformRecoveryPaymentDetail(backend: RecoveryPaymentDetailResponse):
 }
 
 function transformAuditEvent(backend: AuditEventResponse): AuditEvent {
+  // Backend sends `metadata`, but some legacy rows may have `detail`.
+  // We map both into a single string-keyed record so the UI can render
+  // either shape without crashing.
+  const rawMeta = backend.metadata ?? (backend as unknown as { detail?: Record<string, string> }).detail ?? {};
+
+  // Defensive: ensure all values are strings (backend may send nested objects/arrays).
+  const safeMeta: Record<string, string> = {};
+  for (const [k, v] of Object.entries(rawMeta)) {
+    if (v == null) continue;
+    if (typeof v === "string") {
+      safeMeta[k] = v;
+    } else if (typeof v === "number" || typeof v === "boolean") {
+      safeMeta[k] = String(v);
+    } else if (Array.isArray(v)) {
+      safeMeta[k] = v.map((x) => (x == null ? "" : typeof x === "string" ? x : JSON.stringify(x))).join(", ");
+    } else {
+      try {
+        safeMeta[k] = JSON.stringify(v);
+      } catch {
+        safeMeta[k] = "[object]";
+      }
+    }
+  }
+
   const auditEvent: AuditEvent = {
     id: backend.id,
     timestamp: backend.timestamp,
@@ -612,9 +650,9 @@ function transformAuditEvent(backend: AuditEventResponse): AuditEvent {
     category: backend.category as AuditCategory,
     payment_id: backend.payment_id ?? '',
     summary: backend.summary,
-    detail: backend.metadata
+    detail: safeMeta
   };
-  if (backend.amount !== null) {
+  if (backend.amount !== null && backend.amount !== undefined) {
     auditEvent.amount = backend.amount;
   }
   return auditEvent;

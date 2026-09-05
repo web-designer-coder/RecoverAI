@@ -58,6 +58,8 @@ function AuditPage() {
       else next.add(id);
       return next;
     });
+    // Force state update to ensure rendering
+    setTimeout(() => setExpanded((prev) => new Set(prev)), 0);
   };
 
   return (
@@ -136,7 +138,7 @@ function AuditPage() {
         ) : (
           <ol className="relative space-y-0" aria-label="Chronological audit timeline">
             {rows.map((e, i) => {
-              const detailEntries = Object.entries(e.detail);
+              const detailEntries = e.detail ? Object.entries(e.detail) : [];
               const hasDetail = detailEntries.length > 0;
               const open = expanded.has(e.id);
               const categoryColor =
@@ -204,8 +206,8 @@ function AuditPage() {
                         <dl className="mt-2 grid gap-x-8 gap-y-2 rounded-lg border border-border bg-surface-low px-3.5 py-3 sm:grid-cols-2 lg:grid-cols-3 animate-in fade-in duration-200 ease-out">
                           {detailEntries.map(([k, v]) => (
                             <div key={k} className="transition-all duration-150 hover:bg-white/[0.03] rounded px-1 -mx-1">
-                              <dt className="label-sm text-faint">{k}</dt>
-                              <dd className="num mt-0.5 text-[0.75rem] text-foreground">{v}</dd>
+                              <dt className="label-sm text-faint">{String(k)}</dt>
+                              <dd className="num mt-0.5 text-[0.75rem] text-foreground">{String(v)}</dd>
                             </div>
                           ))}
                         </dl>
