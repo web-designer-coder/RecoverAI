@@ -6,6 +6,7 @@ sqlalchemy>=2.0.36,<2.1
 alembic>=1.14,<2.0
 psycopg[binary]>=3.2,<4.0
 python-dotenv>=1.0,<2.0
+email-validator
 
 # runtime security dependencies
 slowapi==0.1.10
