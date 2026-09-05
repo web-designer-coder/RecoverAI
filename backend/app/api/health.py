@@ -8,6 +8,7 @@ Readiness (/ready):  deeper check — database reachable, critical configuration
                      instances that can actually serve requests.
 """
 
+import logging
 from fastapi import APIRouter
 from sqlalchemy import text
 
@@ -16,6 +17,7 @@ from app.database import get_engine
 from app.schemas.common import HealthResponse, ReadinessResponse
 
 router = APIRouter(tags=["health"])
+logger = logging.getLogger("recoverai")
 
 
 @router.get(
@@ -46,7 +48,8 @@ def readiness() -> ReadinessResponse:
     try:
         with get_engine().connect() as conn:
             conn.execute(text("SELECT 1"))
-    except Exception:  # noqa: BLE001
+    except Exception as exc:  # noqa: BLE001
+        logger.exception("Readiness database check failed: %s", exc)
         database = "unreachable"
 
     # Configuration checks
