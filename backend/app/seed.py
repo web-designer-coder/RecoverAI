@@ -245,10 +245,27 @@ def _canonical_action(token: str) -> RecommendedAction:
 def seed_merchants_data(session: Session, merchant: Merchant) -> None:
     """Seed demo dataset belonging ONLY to `merchant`. Idempotent by merchant scope."""
     existing_payments = session.scalars(
-        select(Payment).where(Payment.merchant_id == merchant.id)
-    ).first()
-    if existing_payments is not None:
-        return
+    select(Payment).where(Payment.merchant_id == merchant.id)
+).all()
+
+if existing_payments:
+    # Update the demo recovered-payment dates so the dashboard
+    # displays a meaningful multi-month recovery trend.
+    payment_dates = {
+        "PAY_82845": -3000,
+        "PAY_82831": -2200,
+        "PAY_82810": -1400,
+        "PAY_82760": -700,
+    }
+
+    for payment in existing_payments:
+        if payment.external_payment_id in payment_dates:
+            payment.created_at = _hours_ago(
+                -payment_dates[payment.external_payment_id]
+            )
+
+    session.flush()
+    return
 
     session.add(MerchantPolicy(merchant_id=merchant.id, **SEED_POLICIES))
     customers: dict[str, Customer] = {}
